@@ -181,6 +181,7 @@ impl BLCardService {
                         String::from("private_message"),
                         item.private_message.to_string(),
                     );
+                    temp_map.insert(String::from("creator"), item.creator.to_string());
                     temp_map.insert(String::from("name"), item.name.to_string());
                     temp_map.insert(String::from("count"), format!("{}", item.count));
                     temp_map.insert(String::from("total"), format!("{}", item.total));
@@ -266,13 +267,15 @@ impl BLCardService {
             if let Some(mut item) = self.card_scan_result.get(card_id) {
                 env::log(format!("transfer to {}.", account_id).as_bytes());
 
-                if card.is_avg {
-                    recv_total = card.total / (card.count as u128);
-                } else {
-                    if card.remaining_count - 1 > 0 {
-                        recv_total = self.random_amount(card.total);
+                if card.total == 0 {
+                    if card.is_avg {
+                        recv_total = card.total / (card.count as u128);
                     } else {
-                        recv_total = card.total - card.remaining_total;
+                        if card.remaining_count - 1 > 0 {
+                            recv_total = self.random_amount(card.total);
+                        } else {
+                            recv_total = card.total - card.remaining_total;
+                        }
                     }
                 }
                 
@@ -301,6 +304,7 @@ impl BLCardService {
                 String::from("private_message"),
                 card.private_message.to_string(),
             );
+            temp_map.insert(String::from("creator"), card.creator.to_string());
             temp_map.insert(String::from("name"), card.name.to_string());
             temp_map.insert(String::from("count"), format!("{}", card.count));
             temp_map.insert(String::from("total"), format!("{}", card.total));
@@ -347,6 +351,7 @@ impl BLCardService {
                             String::from("private_message"),
                             card.private_message.to_string(),
                         );
+                        temp_map.insert(String::from("creator"), card.creator.to_string());
                         temp_map.insert(String::from("name"), card.name.to_string());
                         temp_map.insert(String::from("count"), format!("{}", card.count));
                         temp_map.insert(String::from("total"), format!("{}", card.total));
